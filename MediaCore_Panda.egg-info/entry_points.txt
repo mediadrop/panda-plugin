@@ -1,0 +1,4 @@
+
+        [mediacore.plugin]
+        panda=mediacore_panda
+    

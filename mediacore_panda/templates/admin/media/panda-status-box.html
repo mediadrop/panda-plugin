@@ -1,0 +1,189 @@
+<!--! This file is a part of MediaCore-Panda, Copyright 2011 Simple Station Inc.
+
+	MediaCore is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	MediaCore is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div xmlns:py="http://genshi.edgewall.org/"
+     xmlns:i18n="http://genshi.edgewall.org/i18n"
+     i18n:domain="mediacore_panda"
+     id="panda-status-box"
+     class="box">
+	<script type="text/javascript" py:if="include_javascript">
+		var PandaManager = new Class({
+			id: null,
+			status_url: null,
+			update_url: null,
+			status_element_id: null,
+			retry_link_class: null,
+			check_for_completed_link_id: null,
+			mediaMgr: null,
+			fileMgr: null,
+			confirmCheckMgr: null,
+			requests: {
+				refresh: null,
+			},
+
+			initialize: function(opts) {
+				// Load our options...
+				this.status_url = opts.status_url;
+				this.update_url = opts.update_url;
+				this.status_element_id = opts.status_element_id;
+				this.retry_link_class = opts.retry_link_class;
+				this.cancel_link_class = opts.cancel_link_class;
+				this.check_for_completed_link_id = opts.check_for_completed_link_id;
+				this.mediaMgr = opts.mediaMgr;
+				this.fileMgr = opts.fileMgr;
+
+				// Set up the 'check for completed' manager
+				this.confirmCheckMgr = new ConfirmMgr({
+					header: '${_('Confirm Check', domain='mediacore_panda').replace("'", "\\'")}',
+					msg: '${_('This action will check for any completed Panda encoding jobs for this media item. Any changes you have made to the left-hand form since you last clicked "Save" will be lost. Do you want to continue?', domain='mediacore_panda').replace("'", "\\'")}',
+					confirmButtonText: '${_('Yes', domain='mediacore').replace("'", "\\'")}',
+					cancelButtonText: '${_('No', domain='mediacore').replace("'", "\\'")}'
+				});
+				this.confirmCheckMgr.addEvent('onConfirm', function(){window.location = this.update_url;}.bind(this));
+				$(this.check_for_completed_link_id).style.display = 'none';
+
+				// Initialize all ID related activities
+				if (opts.id != null) {
+					this.set_id(opts.id);
+				}
+				// Set the status box to refresh every 30 seconds, and when a file is added
+				this.fileMgr.addEvent('fileAdded', this.start_refreshing.bind(this));
+				this.mediaMgr.addEvent('initMedia', this.set_id.bind(this));
+
+				// Initialize any retry links for failed encodings and the manual sync link
+				this.setup_ajax_links();
+
+				if ($$$$('#panda-file-list li').length) {
+					this.start_refreshing.delay(30000, this);
+				}
+			},
+			set_id: function(id) {
+				// Set the ID and ID components of URLs
+				this.id = id;
+				this.status_url = this.status_url.replace('__ID__', id);
+				this.update_url = this.update_url.replace('__ID__', id);
+				// Set up our AJAX request objects
+				this.requests['refresh'] = new Request.HTML({
+					url: this.status_url,
+					link: 'ignore',
+					onSuccess: this.on_refresh_success.bind(this)
+				});
+				$(this.check_for_completed_link_id).style.display = 'inline';
+			},
+
+			start_refreshing: function() {
+				this.requests['refresh'].send();
+			},
+			on_refresh_success: function(responseTree, responseElements, responseHTML, responseJavaScript) {
+				// Replace the current status box with the newly fetched one.
+				var old_el = $(this.status_element_id);
+				var new_el = Elements.from(responseHTML)[0];
+				new_el.replaces(old_el);
+				this.setup_ajax_links();
+				// Check for the message that indicates that all encodings have completed
+				if (responseHTML.indexOf('id="panda-user-refresh-msg"') == -1) {
+					// Refresh in 30 seconds
+					this.requests['refresh'].send.delay(30000, this.requests['refresh']);
+				}
+			},
+
+			send_ajax_request: function(e) {
+				// onClick action for retry and cancel links.
+				var e = new Event(e); e.stop();
+				var target = $(e.target);
+				target.setStyle('display', 'none');
+				var r_retry = new Request.JSON({
+					url: target.get('href'),
+					onSuccess: this.on_ajax_success.bind(this)
+				});
+				r_retry.send();
+			},
+			on_ajax_success: function(obj) {
+				// onSuccess method for JSON AJAX requests. If request successful, refresh status box.
+				if (obj['success']) {
+					if (this.requests['refresh']) {
+						// XXX: This check should really not be necessary, because
+						//      this is only a callback that will be issued if the
+						//      request object is initialized.
+						this.requests['refresh'].send();
+					}
+				}
+			},
+			setup_ajax_links: function() {
+				// Initialize any retry links for failed encodings
+				var retry_links = $$$$(this.retry_link_class);
+				retry_links.each(function(el) {
+					el.addEvent('click', this.send_ajax_request.bind(this));
+				}.bind(this));
+				var cancel_links = $$$$(this.cancel_link_class);
+				cancel_links.each(function(el) {
+					el.addEvent('click', this.send_ajax_request.bind(this));
+				}.bind(this));
+				// Set up the 'manual sync' 'check for completed' link.
+				var check_link = $(this.check_for_completed_link_id);
+				check_link.addEvent('click', this.confirmCheckMgr.openConfirmDialog.bind(this.confirmCheckMgr));
+			}
+		});
+
+		var pandaMgr = null;
+		window.addEvent('domready', function(){
+			pandaMgr = new PandaManager({
+				id: ${media.id and media.id or 'null'},
+				status_url: "${h.url_for(controller='/panda/admin/media', action='panda_status', id='__ID__')}",
+				update_url: "${h.url_for(controller='/panda/admin/media', action='panda_update', media_id='__ID__')}",
+				status_element_id: 'panda-status-box',
+				retry_link_class: 'a.panda-retry',
+				cancel_link_class: 'a.panda-cancel',
+				check_for_completed_link_id: 'manually-update-panda-status',
+				// XXX: mediaMgr must be defined above!
+				mediaMgr: mediaMgr,
+				fileMgr: fileMgr
+			});
+		});
+	</script>
+	<div class="box-head">
+		<span class="box-head-sec"><a href="#" id="manually-update-panda-status">Refresh</a></span>
+		<h1>Encoding</h1>
+	</div>
+	<py:if test="display_panda_refresh_message">
+		<div class="box-content center" id="panda-user-refresh-msg">
+			Please refresh the page to see the completed encodings.
+		</div>
+	</py:if>
+	<ol id="panda-file-list" class="file-list" py:if="encoding_dicts and not display_panda_refresh_message">
+		<py:for each="file in media.files" py:if="file.id in encoding_dicts">
+			<li py:for="e_id, e in encoding_dicts[file.id].iteritems()" class="${file.type}" id="panda-file-${file.id}">
+				<?python
+					video = video_dicts[file.id][e['video_id']]
+					profile_name = profile_names[e['profile_id']]
+					progress = e['encoding_progress'] and unicode(e['encoding_progress']) or '0'
+					encoding_started = e['started_encoding_at']
+					video_failed = video['status'] == 'fail'
+					encoding_failed = e['status'] == 'fail' or (video_failed and not encoding_started)
+				?>
+				${h.wrap_long_words(file.display_name)} -
+				${profile_name} -
+				<py:if test="encoding_failed">
+					Failed at ${progress}% -
+					<a href="${h.url_for(controller='/panda/admin/media', action='panda_retry', file_id=file.id, encoding_id=e['id'])}" class="panda-retry" title="Retry encoding in this format">Retry</a> -
+					<!--!<a href="${e['error_log']}">Log</a> - -->
+				</py:if>
+				<py:if test="encoding_started and not encoding_failed">${progress}% -</py:if>
+				<py:if test="not encoding_started and not encoding_failed">Queued...</py:if>
+				<a href="${h.url_for(controller='/panda/admin/media', action='panda_cancel', file_id=file.id, encoding_id=e['id'])}" class="panda-cancel" title="Cancel this encoding job">Cancel</a>
+			</li>
+		</py:for>
+	</ol>
+</div>

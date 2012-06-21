@@ -1,0 +1,38 @@
+<!--! This file is a part of MediaCore-Panda, Copyright 2011 Simple Station Inc.
+
+	MediaCore is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	MediaCore is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:py="http://genshi.edgewall.org/"
+	xmlns:i18n="http://genshi.edgewall.org/i18n"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	py:strip="True"
+	i18n:domain="mediacore_panda"
+>
+	<!--! XXX: Argh, a bug in v0.9.0 prevents this from ever displaying because
+	           the engine is not passed to the template as it should be. -->
+	<div class="form box-content" py:if="engine and engine.id">
+		<p class="form_field" py:if="cloud">
+			<img src="${h.url_for('/admin/images/icons/green.png')}" width="16" height="16" class="f-lft" style="margin-right:5px" />
+			<div i18n:msg="cloudName"><strong>Panda is working</strong>: We've connected to your encoding cloud named <strong>${cloud['name']}</strong>.</div>
+			<!--! TODO: Warning: your panda cloud is tied to a different S3 bucket than the one you've configured here. ("<strong>${cloud['s3_videos_bucket']}</strong>".) -->
+		</p>
+		<p class="form_field" py:if="not cloud">
+			<img src="${h.url_for('/admin/images/icons/red.png')}" width="16" height="16" class="f-lft" style="margin-right:5px" />
+			<div i18n:msg=""><strong>Panda is <em>not</em> working</strong>: Could not connect to Panda using the below details.</div>
+		</p>
+	</div>
+	<xi:include href="/admin/box-form.html" />
+</div>

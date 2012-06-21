@@ -1,0 +1,3 @@
+MediaCore >= 0.9.0b1
+simplejson
+panda == 0.1.2
