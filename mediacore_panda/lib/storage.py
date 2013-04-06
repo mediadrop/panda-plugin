@@ -178,17 +178,9 @@ class PandaStorage(FileStorageEngine):
             except PandaException, e:
                 log.exception(e)
 
-        # Ideally we have the @autocommit decorator call the transcode function
-        # after the transaction has been committed normally. This functionality
-        # wasn't added until after the release of v0.9.0 final, so we have an
-        # ugly hack to support that version.
-        if hasattr(request, 'commit_callbacks'):
-            # Use the autocommit decorator to save the changes to the db.
-            autocommitted_transcode = autocommit(transcode)
-            request.commit_callbacks.append(autocommitted_transcode)
-        else:
-            DBSession.commit()
-            transcode()
+        # Use the autocommit decorator to save the changes to the db.
+        autocommitted_transcode = autocommit(transcode)
+        request.commit_callbacks.append(autocommitted_transcode)
 
     def get_uris(self, media_file):
         """Return a list of URIs from which the stored file can be accessed.
