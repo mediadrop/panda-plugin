@@ -24,7 +24,7 @@ from mediacore.lib.storage import FileStorageEngine, LocalFileStorage, StorageUR
 from mediacore.lib.filetypes import guess_container_format, guess_media_type, VIDEO
 from mediacore.model.meta import DBSession
 
-from mediacore_panda.lib import PANDA_URL_PREFIX, TYPES
+from mediacore_panda.lib import PANDA_URL_PREFIX, TYPES, PandaException
 
 PANDA_ACCESS_KEY = u'panda_access_key'
 PANDA_SECRET_KEY = u'panda_secret_key'
