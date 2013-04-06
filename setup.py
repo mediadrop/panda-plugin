@@ -17,7 +17,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'MediaCore-Panda',
-    version = '0.9.0b3',
+    version = '0.10dev',
     packages = find_packages(),
     author = 'Anthony Theocharis',
     author_email = 'anthony@simplestation.com',
