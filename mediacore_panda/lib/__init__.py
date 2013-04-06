@@ -41,7 +41,7 @@ POST = 'POST'
 DELETE = 'DELETE'
 GET = 'GET'
 
-META_VIDEO_PREFIX = "panda_video_"
+META_VIDEO_PREFIX = u"panda_video_"
 PANDA_URL_PREFIX = "panda:"
 TYPES = {
     'video': "video_id",
@@ -408,13 +408,13 @@ class PandaHelper(object):
     def associate_video_id(self, media_file, video_id, state=None):
         # Create a meta_key for this MediaCore::MediaFile -> Panda::Video pairing.
         # This is sort of a perversion of the meta table, but hey, it works.
-        meta_key = "%s%s" % (META_VIDEO_PREFIX, video_id)
+        meta_key = u"%s%s" % (META_VIDEO_PREFIX, video_id)
         media_file.meta[meta_key] = state
 
     def disassociate_video_id(self, media_file, video_id):
         # Create a meta_key for this MediaCore::MediaFile -> Panda::Video pairing.
         # This is sort of a perversion of the meta table, but hey, it works.
-        meta_key = "%s%s" % (META_VIDEO_PREFIX, video_id)
+        meta_key = u"%s%s" % (META_VIDEO_PREFIX, video_id)
         mfm = DBSession.query(MediaFilesMeta)\
                 .filter(MediaFilesMeta.media_files_id==media_file.id)\
                 .filter(MediaFilesMeta.key==meta_key)
