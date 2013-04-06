@@ -15,9 +15,7 @@
 
 import logging
 
-from repoze.what.predicates import has_permission
-from repoze.what.plugins.pylonshq import ActionProtector
-
+from mediacore.lib.auth import has_permission, FunctionProtector
 from mediacore.lib.base import BaseController
 from mediacore.lib.decorators import autocommit, expose
 from mediacore.lib.helpers import redirect
@@ -32,7 +30,7 @@ log = logging.getLogger(__name__)
 admin_perms = has_permission('edit')
 
 class MediaController(BaseController):
-    @ActionProtector(admin_perms)
+    @FunctionProtector(admin_perms)
     @expose('panda/admin/media/panda-status-box.html')
     def panda_status(self, id, **kwargs):
         media = fetch_row(Media, id)
@@ -45,7 +43,7 @@ class MediaController(BaseController):
 
         return result
 
-    @ActionProtector(admin_perms)
+    @FunctionProtector(admin_perms)
     @expose('json')
     @autocommit
     def panda_cancel(self, file_id, encoding_id, **kwargs):
@@ -56,7 +54,7 @@ class MediaController(BaseController):
             success = True,
         )
 
-    @ActionProtector(admin_perms)
+    @FunctionProtector(admin_perms)
     @expose('json')
     @autocommit
     def panda_retry(self, file_id, encoding_id, **kwargs):
