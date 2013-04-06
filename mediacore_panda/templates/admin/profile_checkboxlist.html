@@ -31,7 +31,7 @@
 					<label style="white-space:nowrap">
 						<input type="${field_type}" name="${name}" value="${p['name']}" py:attrs="attrs"
 						       class="f-lft" style="width:auto;margin-right:5px"
-						       checked="${p['id'] in value and 'checked' or None}" />
+						       checked="${p['name'] in value and 'checked' or None}" />
 						${p['name']}
 					</label>
 				</td>
