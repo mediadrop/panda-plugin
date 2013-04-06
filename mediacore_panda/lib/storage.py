@@ -21,10 +21,9 @@ from pylons import request
 from mediacore.lib.decorators import autocommit, memoize
 from mediacore.lib.helpers import download_uri, url_for
 from mediacore.lib.storage import FileStorageEngine, LocalFileStorage, StorageURI, UnsuitableEngineError, CannotTranscode
-from mediacore.lib.filetypes import guess_container_format, guess_media_type, VIDEO
-from mediacore.model.meta import DBSession
+from mediacore.lib.filetypes import guess_container_format, VIDEO
 
-from mediacore_panda.lib import PANDA_URL_PREFIX, TYPES, PandaException
+from mediacore_panda.lib import PANDA_URL_PREFIX, PandaException
 
 PANDA_ACCESS_KEY = u'panda_access_key'
 PANDA_SECRET_KEY = u'panda_secret_key'

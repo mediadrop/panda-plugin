@@ -23,7 +23,6 @@ from mediacore.model import Media, MediaFile, fetch_row
 from mediacore.model.meta import DBSession
 
 from mediacore_panda import add_panda_vars
-from mediacore_panda.lib import PandaHelper
 from mediacore_panda.lib.storage import PandaStorage
 
 log = logging.getLogger(__name__)
