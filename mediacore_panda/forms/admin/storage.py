@@ -42,7 +42,7 @@ class PandaForm(StorageForm):
             TextField('access_key', maxlength=255, label_text=N_('Access Key', domain='mediacore_panda')),
             TextField('secret_key', maxlength=255, label_text=N_('Secret Key', domain='mediacore_panda')),
             SingleSelectField('api_host', label_text=N_('API URL', domain='mediacore_panda'),
-                options=('api.pandastream.com', 'api.eu.pandastream.com')),
+                options=('api.pandastream.com', 'api-eu.pandastream.com')),
         ]),
         ListFieldSet('s3', suppress_label=True, legend=N_('Amazon S3 Details:', domain='mediacore_panda'), children=[
             TextField('bucket_name', maxlength=255, label_text=N_('S3 Bucket Name', domain='mediacore_panda')),
