@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 setup(
     name = 'MediaCore-Panda',
     description = 'A MediaCore CE plugin for using the Panda online transcoding service with Amazon S3.',
-    version = '0.10dev',
+    version = '0.10',
     
     author = 'Anthony Theocharis',
     author_email = 'anthony@simplestation.com',
