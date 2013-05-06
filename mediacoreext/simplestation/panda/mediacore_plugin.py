@@ -19,7 +19,7 @@ from mediacore.model.meta import DBSession
 from mediacore.plugin import events
 from mediacore.plugin.events import observes
 
-from mediacore_panda.lib.storage import PandaStorage
+from mediacoreext.simplestation.panda.lib.storage import PandaStorage
 
 log = logging.getLogger(__name__)
 

@@ -23,7 +23,7 @@ from mediacore.lib.helpers import download_uri, url_for
 from mediacore.lib.storage import FileStorageEngine, LocalFileStorage, StorageURI, UnsuitableEngineError, CannotTranscode
 from mediacore.lib.filetypes import guess_container_format, VIDEO
 
-from mediacore_panda.lib import PANDA_URL_PREFIX, PandaException
+from mediacoreext.simplestation.panda.lib import PANDA_URL_PREFIX, PandaException
 
 PANDA_ACCESS_KEY = u'panda_access_key'
 PANDA_SECRET_KEY = u'panda_secret_key'
@@ -34,8 +34,9 @@ S3_BUCKET_NAME = u's3_bucket_name'
 CLOUDFRONT_DOWNLOAD_URI = u'cloudfront_download_uri'
 CLOUDFRONT_STREAMING_URI = u'cloudfront_streaming_uri'
 
-from mediacore_panda.forms.admin.storage import PandaForm
-from mediacore_panda.lib import PandaHelper
+from mediacoreext.simplestation.panda.forms.admin.storage import PandaForm
+from mediacoreext.simplestation.panda.lib import PandaHelper
+
 
 log = logging.getLogger(__name__)
 

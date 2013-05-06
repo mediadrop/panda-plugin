@@ -22,8 +22,8 @@ from mediacore.lib.helpers import merge_dicts
 from mediacore.lib.i18n import N_
 from mediacore.model.meta import DBSession
 
-from mediacore_panda.lib import PandaException
-from mediacore_panda.lib.storage import (CLOUDFRONT_DOWNLOAD_URI,
+from mediacoreext.simplestation.panda.lib import PandaException
+from mediacoreext.simplestation.panda.lib.storage import (CLOUDFRONT_DOWNLOAD_URI,
     CLOUDFRONT_STREAMING_URI, PANDA_ACCESS_KEY, PANDA_CLOUD_ID, PANDA_PROFILES,
     PANDA_SECRET_KEY, PANDA_API_HOST, S3_BUCKET_NAME)
 

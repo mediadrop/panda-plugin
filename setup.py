@@ -17,12 +17,18 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'MediaCore-Panda',
+    description = 'A MediaCore CE plugin for using the Panda online transcoding service with Amazon S3.',
     version = '0.10dev',
-    packages = find_packages(),
+    
     author = 'Anthony Theocharis',
     author_email = 'anthony@simplestation.com',
-    description = 'A MediaCore plugin for using the Panda online transcoding service with Amazon S3.',
+    license='GPL v3 or later', # see LICENSE.txt
+    
+    packages=find_packages(),
+    namespace_packages = ['mediacoreext'],
+    include_package_data=True,    
     zip_safe = False,
+    
     install_requires = [
         'MediaCore >= 0.10dev',
         'simplejson',
@@ -30,9 +36,9 @@ setup(
     ],
     entry_points = '''
         [mediacore.plugin]
-        panda=mediacore_panda
+        panda = mediacoreext.simplestation.panda.mediacore_plugin
     ''',
-    message_extractors = {'mediacore_panda': [
+    message_extractors = {'mediacoreext/simplestation/panda': [
         ('**.py', 'python', None),
         ('templates/**.html', 'genshi', {'template_class': 'genshi.template.markup:MarkupTemplate'}),
         ('public/**', 'ignore', None),

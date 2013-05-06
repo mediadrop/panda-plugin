@@ -22,8 +22,8 @@ from mediacore.lib.helpers import redirect
 from mediacore.model import Media, MediaFile, fetch_row
 from mediacore.model.meta import DBSession
 
-from mediacore_panda import add_panda_vars
-from mediacore_panda.lib.storage import PandaStorage
+from mediacoreext.simplestation.panda.mediacore_plugin import add_panda_vars
+from mediacoreext.simplestation.panda.lib.storage import PandaStorage
 
 log = logging.getLogger(__name__)
 admin_perms = has_permission('edit')
